@@ -56,6 +56,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
         if(optionalAuth.get().getActivationCode().equals(dto.getActivationCode())){
             optionalAuth.get().setStatus(EStatus.ACTIVE);
             update(optionalAuth.get());
+            userManager.activateStatus(optionalAuth.get().getId());
             return true;
         } else {
             throw new AuthManagerException(ErrorType.ACTIVATION_CODE_ERROR);
