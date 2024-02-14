@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserProfileService extends ServiceManager<UserProfile,Long> {
+public class UserProfileService extends ServiceManager<UserProfile,String> {
 
     private final UserProfileRepository userProfileRepository;
 
@@ -29,7 +29,6 @@ public class UserProfileService extends ServiceManager<UserProfile,Long> {
         } catch (Exception e) {
             throw new UserManagerException(ErrorType.USER_NOT_CREATED);
         }
-
     }
 
     public Boolean activateStatus(Long authId) {

@@ -14,3 +14,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secretKey: ${java13secretkey}
+  audience: ${java13audience}
+  issuer:   ${java13issuer}

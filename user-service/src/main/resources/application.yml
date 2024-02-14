@@ -2,15 +2,12 @@ server:
   port: 7071
 
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: root
-    url: jdbc:postgresql://localhost:5432/java13UserDB
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  data:
+    mongodb:
+      host: localhost
+      port: 27020
+      username: java13user
+      password: root
+      database: userdb
+
+

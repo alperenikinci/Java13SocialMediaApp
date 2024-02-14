@@ -1,22 +1,24 @@
 package com.bilgeadam.entity;
 
 import com.bilgeadam.utility.enums.EStatus;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@Entity
+@Document
 public class UserProfile extends BaseEntity{
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
     private Long authId;
     private String username;
     private String email;
@@ -25,7 +27,7 @@ public class UserProfile extends BaseEntity{
     private String address;
     private String about;
 
-    @Enumerated(EnumType.STRING)
+
     @Builder.Default
     private EStatus status = EStatus.PENDING;
 }

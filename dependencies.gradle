@@ -5,7 +5,8 @@ ext{
             lombok: "1.18.30",
             openApi: "2.3.0",
             mapStruct: "1.5.5.Final",
-            springCloud: "4.1.0"
+            springCloud: "4.1.0",
+            jwt: "4.4.0"
     ]
 
     libs =[
@@ -17,7 +18,9 @@ ext{
             openApi:                        "org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions.openApi}",
             mapStruct:                      "org.mapstruct:mapstruct:${versions.mapStruct}",
             mapStructProcessor:             "org.mapstruct:mapstruct-processor:${versions.mapStruct}",
-            springOpenFeign:                "org.springframework.cloud:spring-cloud-starter-openfeign:${versions.springCloud}"
+            springOpenFeign:                "org.springframework.cloud:spring-cloud-starter-openfeign:${versions.springCloud}",
+            springBootDataMongo:            "org.springframework.boot:spring-boot-starter-data-mongodb:${versions.springBoot}",
+            javaJwt:                        "com.auth0:java-jwt:${versions.jwt}"
     ]
 
 }

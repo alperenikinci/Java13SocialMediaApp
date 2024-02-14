@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.bilgeadam.constant.RestApiUrls.*;
 import static com.bilgeadam.constant.RestApiUrls.ACTIVATE_STATUS;
 
@@ -25,6 +27,11 @@ public class UserProfileController {
     @GetMapping(ACTIVATE_STATUS+"/{authId}")
     public ResponseEntity<Boolean> activateStatus(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.activateStatus(authId));
+    }
+
+    @GetMapping(FIND_ALL)
+    public ResponseEntity<List<UserProfile>> findAll(){
+        return ResponseEntity.ok(userProfileService.findAll());
     }
 
 }
