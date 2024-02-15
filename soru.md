@@ -10,3 +10,5 @@
 ## 4- Kullanıcının Status'unu aktif hale getirmek için aktivasyon kod doğrulaması yapan bir metot yazınız.
 
 ## 5- Auth'da status'u ACTIVE hale getirdigimizde user-service'deki status da aktif hale gelsin.
+
+## 6- Login metodunu revize edelim. Bize bir token üretip o tokeni geri dönsün. Sadece aktif kullanıcılar login olabilsin.
