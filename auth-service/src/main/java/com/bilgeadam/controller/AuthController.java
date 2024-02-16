@@ -3,6 +3,7 @@ package com.bilgeadam.controller;
 import com.bilgeadam.dto.request.ActivateStatusRequestDto;
 import com.bilgeadam.dto.request.LoginRequestDto;
 import com.bilgeadam.dto.request.RegisterRequestDto;
+import com.bilgeadam.dto.request.UpdateEmailRequestDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.service.AuthService;
 import com.bilgeadam.utility.JwtTokenManager;
@@ -27,13 +28,18 @@ public class AuthController {
     }
 
     @PostMapping(LOGIN)
-    public ResponseEntity<Boolean> login(@RequestBody LoginRequestDto dto){
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto dto){
         return ResponseEntity.ok(authService.login(dto));
     }
 
     @PostMapping(ACTIVATE_STATUS)
     public ResponseEntity<Boolean> activateStatus(@RequestBody ActivateStatusRequestDto dto){
         return ResponseEntity.ok(authService.activateStatus(dto));
+    }
+
+    @PutMapping(UPDATE_EMAIL)
+    public ResponseEntity<Boolean> updateEmail(@RequestBody UpdateEmailRequestDto dto){
+        return ResponseEntity.ok(authService.updateEmail(dto));
     }
 
     @GetMapping("/create-token")

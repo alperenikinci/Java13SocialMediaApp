@@ -27,7 +27,6 @@ public class UserProfile extends BaseEntity{
     private String address;
     private String about;
 
-
     @Builder.Default
     private EStatus status = EStatus.PENDING;
 }

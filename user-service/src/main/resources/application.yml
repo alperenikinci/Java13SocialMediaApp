@@ -10,4 +10,7 @@ spring:
       password: root
       database: userdb
 
-
+jwt:
+  secretKey: ${java13secretkey}
+  audience: ${java13audience}
+  issuer:   ${java13issuer}

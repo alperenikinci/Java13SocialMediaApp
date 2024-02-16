@@ -12,3 +12,5 @@
 ## 5- Auth'da status'u ACTIVE hale getirdigimizde user-service'deki status da aktif hale gelsin.
 
 ## 6- Login metodunu revize edelim. Bize bir token üretip o tokeni geri dönsün. Sadece aktif kullanıcılar login olabilsin.
+
+## 7- User'da email'imi degistirdigimde auth'da da degissin istiyorum. Bunun icin user-service'den -> auth-service'e bir feign client baglantisi gerceklestirelim.

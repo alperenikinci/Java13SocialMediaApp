@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 import com.bilgeadam.dto.request.ActivateStatusRequestDto;
 import com.bilgeadam.dto.request.LoginRequestDto;
 import com.bilgeadam.dto.request.RegisterRequestDto;
+import com.bilgeadam.dto.request.UpdateEmailRequestDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.entity.Auth;
 import com.bilgeadam.exception.AuthManagerException;
@@ -11,6 +12,7 @@ import com.bilgeadam.manager.UserManager;
 import com.bilgeadam.mapper.AuthMapper;
 import com.bilgeadam.repository.AuthRepository;
 import com.bilgeadam.utility.CodeGenerator;
+import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
 
 import com.bilgeadam.utility.enums.EStatus;
@@ -24,11 +26,13 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
     private final AuthRepository authRepository;
     private final UserManager userManager;
+    private final JwtTokenManager jwtTokenManager;
 
-    public AuthService(AuthRepository authRepository, UserManager userManager) {
+    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
+        this.jwtTokenManager = jwtTokenManager;
     }
 
     public RegisterResponseDto register(RegisterRequestDto dto) {
@@ -40,12 +44,17 @@ public class AuthService extends ServiceManager<Auth, Long> {
         return AuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
     }
 
-    public Boolean login(LoginRequestDto dto) {
+    public String login(LoginRequestDto dto) {
         Optional<Auth> authOptional = authRepository.findOptionalByUsernameAndPassword(dto.getUsername(),dto.getPassword());
         if(authOptional.isEmpty()){
             throw new AuthManagerException(ErrorType.LOGIN_ERROR);
         }
-        return true;
+        if(authOptional.get().getStatus().equals(EStatus.ACTIVE)){
+            return jwtTokenManager.createToken(authOptional.get().getId(),authOptional.get().getRole())
+                    .orElseThrow(() -> {throw new AuthManagerException(ErrorType.TOKEN_NOT_CREATED);});
+        } else {
+            throw new AuthManagerException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public Boolean activateStatus(ActivateStatusRequestDto dto) {
@@ -61,5 +70,15 @@ public class AuthService extends ServiceManager<Auth, Long> {
         } else {
             throw new AuthManagerException(ErrorType.ACTIVATION_CODE_ERROR);
         }
+    }
+
+    public Boolean updateEmail(UpdateEmailRequestDto dto) {
+        Optional<Auth> authOptional = authRepository.findById(dto.getId());
+        if(authOptional.isEmpty()){
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        authOptional.get().setEmail(dto.getEmail());
+        update(authOptional.get());
+        return true;
     }
 }

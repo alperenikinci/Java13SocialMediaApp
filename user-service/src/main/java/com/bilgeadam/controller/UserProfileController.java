@@ -1,6 +1,7 @@
 package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.CreateUserRequestDto;
+import com.bilgeadam.dto.request.UserProfileUpdateRequestDto;
 import com.bilgeadam.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,11 @@ public class UserProfileController {
     @GetMapping(FIND_ALL)
     public ResponseEntity<List<UserProfile>> findAll(){
         return ResponseEntity.ok(userProfileService.findAll());
+    }
+
+    @PutMapping(UPDATE)
+    public ResponseEntity<Boolean> update(@RequestBody UserProfileUpdateRequestDto dto){
+        return ResponseEntity.ok(userProfileService.update(dto));
     }
 
 }
