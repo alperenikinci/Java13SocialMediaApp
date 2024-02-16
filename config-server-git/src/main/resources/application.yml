@@ -8,8 +8,8 @@ spring:
     config:
       server:
         git:
-          uri:
+          uri: ${java13_config_server_uri}
           default-label: main
           skip-ssl-validation: true
-          username:
-          password:
+          username: ${java13_config_server_username}
+          password: ${java13_config_server_token}
