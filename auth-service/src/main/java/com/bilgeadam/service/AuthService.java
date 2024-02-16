@@ -36,12 +36,17 @@ public class AuthService extends ServiceManager<Auth, Long> {
         this.jwtTokenManager = jwtTokenManager;
     }
 
+    @Transactional
     public RegisterResponseDto register(RegisterRequestDto dto) {
         Auth auth = AuthMapper.INSTANCE.fromRegisterRequestToAuth(dto);
         auth.setActivationCode(CodeGenerator.generateCode());
         save(auth);
+//        try {
         userManager.createUser(AuthMapper.INSTANCE.fromAuthToCreateUserRequestDto(auth));
-
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            delete(auth);
+//        }
         return AuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
     }
 
@@ -83,14 +88,18 @@ public class AuthService extends ServiceManager<Auth, Long> {
         return true;
     }
 
-    public Boolean softDeleteById(Long id){
-        Optional<Auth> authOptional = authRepository.findById(id);
+    public Boolean softDeleteByToken(String token){
+        Optional<Long> optionalId = jwtTokenManager.getIdFromToken(token);
+        if(optionalId.isEmpty()){
+            throw new AuthManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<Auth> authOptional = authRepository.findById(optionalId.get());
         if(authOptional.isEmpty()){
             throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
         }
         authOptional.get().setStatus(EStatus.DELETED);
         update(authOptional.get());
-        userManager.deleteById(id);
+        userManager.deleteByToken(token);
         return true;
     }
 }

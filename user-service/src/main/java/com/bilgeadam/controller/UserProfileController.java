@@ -40,9 +40,9 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.update(dto));
     }
 
-    @DeleteMapping(DELETE_BY_ID)
-    public ResponseEntity<Boolean> deleteById(@RequestParam Long id){
-        return ResponseEntity.ok(userProfileService.softDeleteById(id));
+    @DeleteMapping(DELETE_BY_TOKEN)
+    public ResponseEntity<Boolean> deleteByToken(@RequestParam String token){
+        return ResponseEntity.ok(userProfileService.softDeleteByToken(token));
     }
 
 }

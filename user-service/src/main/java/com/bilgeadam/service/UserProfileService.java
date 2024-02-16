@@ -79,8 +79,12 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         return true;
     }
 
-    public Boolean softDeleteById(Long id){
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(id);
+    public Boolean softDeleteByToken(String token){
+        Optional<Long> optionalAuthId = jwtTokenManager.getIdFromToken(token);
+        if(optionalAuthId.isEmpty()){
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(optionalAuthId.get());
         if(optionalUserProfile.isEmpty()){
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }

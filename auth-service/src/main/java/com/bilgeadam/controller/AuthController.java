@@ -42,9 +42,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.updateEmail(dto));
     }
 
-    @DeleteMapping(DELETE_BY_ID)
-    public ResponseEntity<Boolean> deleteById(Long id){
-        return ResponseEntity.ok(authService.softDeleteById(id));
+    @DeleteMapping(DELETE_BY_TOKEN)
+    public ResponseEntity<Boolean> deleteByToken(@RequestParam String token){
+        return ResponseEntity.ok(authService.softDeleteByToken(token));
     }
 
     @GetMapping("/create-token")
