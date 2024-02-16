@@ -78,4 +78,14 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
                 .build());
         return true;
     }
+
+    public Boolean softDeleteById(Long id){
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(id);
+        if(optionalUserProfile.isEmpty()){
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        optionalUserProfile.get().setStatus(EStatus.DELETED);
+        update(optionalUserProfile.get());
+        return true;
+    }
 }

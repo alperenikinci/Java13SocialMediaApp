@@ -17,6 +17,7 @@ import com.bilgeadam.utility.ServiceManager;
 
 import com.bilgeadam.utility.enums.EStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -79,6 +80,17 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         authOptional.get().setEmail(dto.getEmail());
         update(authOptional.get());
+        return true;
+    }
+
+    public Boolean softDeleteById(Long id){
+        Optional<Auth> authOptional = authRepository.findById(id);
+        if(authOptional.isEmpty()){
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        authOptional.get().setStatus(EStatus.DELETED);
+        update(authOptional.get());
+        userManager.deleteById(id);
         return true;
     }
 }
