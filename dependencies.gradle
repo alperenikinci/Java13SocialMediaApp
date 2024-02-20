@@ -23,6 +23,7 @@ ext{
             javaJwt:                        "com.auth0:java-jwt:${versions.jwt}",
             springCloudStarterConfig:       "org.springframework.cloud:spring-cloud-starter-config:${versions.springCloud}",
             springCloudConfigClient:        "org.springframework.cloud:spring-cloud-config-client:${versions.springCloud}",
-            springCloudConfigServer:        "org.springframework.cloud:spring-cloud-config-server:${versions.springCloud}"
+            springCloudConfigServer:        "org.springframework.cloud:spring-cloud-config-server:${versions.springCloud}",
+            springBootStarterDataRedis:     "org.springframework.boot:spring-boot-starter-data-redis:${versions.springBoot}",
     ]
 }

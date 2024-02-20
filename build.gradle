@@ -50,6 +50,7 @@ allprojects {
         annotationProcessor     libs.mapStructProcessor
         implementation          libs.springOpenFeign
         implementation          libs.javaJwt
+        implementation          libs.springBootStarterDataRedis
     }
 }
     configurations {

@@ -12,6 +12,7 @@ import com.bilgeadam.repository.UserProfileRepository;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
 import com.bilgeadam.utility.enums.EStatus;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -91,5 +92,20 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         optionalUserProfile.get().setStatus(EStatus.DELETED);
         update(optionalUserProfile.get());
         return true;
+    }
+
+
+    @Cacheable(value = "findByUserName")
+    public UserProfile findByUsername(String username){
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findOptionalByUsername(username);
+        if(optionalUserProfile.isEmpty()){
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        return optionalUserProfile.get();
     }
 }

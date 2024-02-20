@@ -5,6 +5,7 @@ import com.bilgeadam.dto.request.UserProfileUpdateRequestDto;
 import com.bilgeadam.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,11 @@ public class UserProfileController {
     @DeleteMapping(DELETE_BY_TOKEN)
     public ResponseEntity<Boolean> deleteByToken(@RequestParam String token){
         return ResponseEntity.ok(userProfileService.softDeleteByToken(token));
+    }
+
+    @GetMapping("/findByUsername")
+    public ResponseEntity<UserProfile> findByUsername(@RequestParam String username){
+        return ResponseEntity.ok(userProfileService.findByUsername(username));
     }
 
 }
