@@ -46,9 +46,14 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.softDeleteByToken(token));
     }
 
-    @GetMapping("/findByUsername")
+    @GetMapping("/find-by-username")
     public ResponseEntity<UserProfile> findByUsername(@RequestParam String username){
         return ResponseEntity.ok(userProfileService.findByUsername(username));
+    }
+
+    @GetMapping(FIND_BY_ROLE)
+    public ResponseEntity<List<UserProfile>> findByRole(@RequestParam String role){
+        return ResponseEntity.ok(userProfileService.findByRole(role));
     }
 
 }

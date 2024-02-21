@@ -16,6 +16,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.bilgeadam.constant.RestApiUrls.*;
 @RestController
 @RequiredArgsConstructor
@@ -100,6 +102,11 @@ public class AuthController {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    @GetMapping(FIND_BY_ROLE)
+    public ResponseEntity<List<Long>> findByRole(@RequestParam String role){
+        return ResponseEntity.ok(authService.findByRole(role));
     }
 
 }

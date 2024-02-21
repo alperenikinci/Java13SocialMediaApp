@@ -11,5 +11,5 @@ public interface UserProfileRepository  extends MongoRepository<UserProfile,Stri
 
     Optional<UserProfile> findByAuthId(Long authId);
 
-    Optional<UserProfile> findOptionalByUsername(String username);
+    Optional<UserProfile> findOptionalByUsernameIgnoreCase(String username);
 }

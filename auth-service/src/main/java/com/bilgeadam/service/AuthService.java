@@ -15,11 +15,16 @@ import com.bilgeadam.utility.CodeGenerator;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
 
+import com.bilgeadam.utility.enums.ERole;
 import com.bilgeadam.utility.enums.EStatus;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,12 +33,14 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final AuthRepository authRepository;
     private final UserManager userManager;
     private final JwtTokenManager jwtTokenManager;
+    private final CacheManager cacheManager;
 
-    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager) {
+    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager, CacheManager cacheManager) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
         this.jwtTokenManager = jwtTokenManager;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional
@@ -43,6 +50,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
         save(auth);
 //        try {
         userManager.createUser(AuthMapper.INSTANCE.fromAuthToCreateUserRequestDto(auth));
+        cacheManager.getCache("findByRole").evict(auth.getRole().toString().toUpperCase());
 //        } catch (Exception e){
 //            e.printStackTrace();
 //            delete(auth);
@@ -101,5 +109,15 @@ public class AuthService extends ServiceManager<Auth, Long> {
         update(authOptional.get());
         userManager.deleteByToken(token);
         return true;
+    }
+
+    public List<Long> findByRole(String role) {
+        ERole myRole;
+        try {
+            myRole = ERole.valueOf(role.toUpperCase(Locale.ENGLISH)); //admin -> ADMİN -> ADMIN
+        } catch (Exception e){
+            throw new AuthManagerException(ErrorType.ROLE_NOT_FOUND);
+        }
+        return authRepository.findAllByRole(myRole).stream().map(x->x.getId()).collect(Collectors.toList());
     }
 }

@@ -12,10 +12,14 @@ import com.bilgeadam.repository.UserProfileRepository;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
 import com.bilgeadam.utility.enums.EStatus;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService extends ServiceManager<UserProfile,String> {
@@ -23,12 +27,14 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
     private final UserProfileRepository userProfileRepository;
     private final JwtTokenManager jwtTokenManager;
     private final AuthManager authManager;
+    private final CacheManager cacheManager;
 
-    public UserProfileService(UserProfileRepository userProfileRepository, JwtTokenManager jwtTokenManager, AuthManager authManager) {
+    public UserProfileService(UserProfileRepository userProfileRepository, JwtTokenManager jwtTokenManager, AuthManager authManager, CacheManager cacheManager) {
         super(userProfileRepository);
         this.userProfileRepository = userProfileRepository;
         this.jwtTokenManager = jwtTokenManager;
         this.authManager = authManager;
+        this.cacheManager = cacheManager;
     }
 
     public Boolean createUser(CreateUserRequestDto dto) {
@@ -72,6 +78,9 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         userProfile.setAddress(dto.getAddress());
         userProfile.setAbout(dto.getAbout());
         update(userProfile);
+        cacheManager.getCache("findByUserName").evict(userProfile.getUsername().toLowerCase());
+        cacheManager.getCache("findByRole").clear();
+
 
         authManager.updateEmail(UpdateEmailRequestDto.builder()
                 .id(userProfile.getAuthId())
@@ -94,18 +103,31 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
         return true;
     }
 
-
-    @Cacheable(value = "findByUserName")
-    public UserProfile findByUsername(String username){
+    @Cacheable(value = "findByUserName",key = "#username.toLowerCase()")
+    public UserProfile findByUsername(String username) {
         try {
-            Thread.sleep(2000);
-        } catch (Exception e){
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findOptionalByUsername(username);
-        if(optionalUserProfile.isEmpty()){
+        Optional<UserProfile> userProfile = userProfileRepository.findOptionalByUsernameIgnoreCase(username);
+        if(userProfile.isEmpty()){
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-        return optionalUserProfile.get();
+        return userProfile.get();
+    }
+
+    @Cacheable(value="findByRole",key = "#role.toUpperCase()") //USER  //findbyrole::USER
+    public List<UserProfile> findByRole(String role){
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+//        ResponseEntity<List<Long>> authIds= authManager.findByRole(role);
+        List<Long> authIds = authManager.findByRole(role).getBody();
+
+        return authIds.stream().map(x->  userProfileRepository.findByAuthId(x)
+                .orElseThrow( () -> {throw new UserManagerException(ErrorType.USER_NOT_FOUND);})).collect(Collectors.toList());
     }
 }
