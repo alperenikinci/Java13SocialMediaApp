@@ -8,6 +8,7 @@ import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.AuthManager;
 import com.bilgeadam.mapper.UserProfileMapper;
+import com.bilgeadam.rabbitmq.model.RegisterModel;
 import com.bilgeadam.repository.UserProfileRepository;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
@@ -42,6 +43,14 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
             save(UserProfileMapper.INSTANCE.fromCreateRequestToUserProfile(dto));
             return true;
         } catch (Exception e) {
+            throw new UserManagerException(ErrorType.USER_NOT_CREATED);
+        }
+    }
+
+    public void createUserWithRabbitMq(RegisterModel model) {
+        try {
+            save(UserProfileMapper.INSTANCE.fromRegisterModelToUserProfile(model));
+        } catch (Exception e){
             throw new UserManagerException(ErrorType.USER_NOT_CREATED);
         }
     }

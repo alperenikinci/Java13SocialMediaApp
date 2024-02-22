@@ -17,7 +17,9 @@ public enum ErrorType {
     INVALID_TOKEN(4114,"Geçersiz token" ,HttpStatus.BAD_REQUEST),
     TOKEN_NOT_CREATED(4115,"Token olusturulamadi..." , HttpStatus.BAD_REQUEST ),
     ACCOUNT_NOT_ACTIVE(4116,"Hesabiniz aktif degildir..." , HttpStatus.FORBIDDEN ),
-    ROLE_NOT_FOUND(4117,"ROL BULUNAMADI" ,HttpStatus.BAD_REQUEST);
+    ROLE_NOT_FOUND(4117,"ROL BULUNAMADI" ,HttpStatus.BAD_REQUEST),
+    USER_NOT_CREATED(4118,"Kullanici profili olusturulamadi...",HttpStatus.BAD_REQUEST);
+
 
 
     private int code;

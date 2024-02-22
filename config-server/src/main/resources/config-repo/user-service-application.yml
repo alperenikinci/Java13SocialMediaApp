@@ -9,8 +9,16 @@ spring:
       username: java13user
       password: root
       database: userdb
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: java13
+    password: 123
 
 jwt:
   secretKey: ${java13secretkey}
   audience: ${java13audience}
   issuer:   ${java13issuer}
+
+rabbitmq:
+  queue-register: register-queue

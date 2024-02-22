@@ -10,6 +10,7 @@ import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.UserManager;
 import com.bilgeadam.mapper.AuthMapper;
+import com.bilgeadam.rabbitmq.producer.RegisterProducer;
 import com.bilgeadam.repository.AuthRepository;
 import com.bilgeadam.utility.CodeGenerator;
 import com.bilgeadam.utility.JwtTokenManager;
@@ -34,13 +35,16 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final UserManager userManager;
     private final JwtTokenManager jwtTokenManager;
     private final CacheManager cacheManager;
+    private final RegisterProducer registerProducer;
 
-    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager, CacheManager cacheManager) {
+
+    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager, CacheManager cacheManager, RegisterProducer registerProducer) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
         this.jwtTokenManager = jwtTokenManager;
         this.cacheManager = cacheManager;
+        this.registerProducer = registerProducer;
     }
 
     @Transactional
@@ -55,6 +59,20 @@ public class AuthService extends ServiceManager<Auth, Long> {
 //            e.printStackTrace();
 //            delete(auth);
 //        }
+        return AuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
+    }
+
+    public RegisterResponseDto registerWithRabbitMQ(RegisterRequestDto dto) {
+        Auth auth = AuthMapper.INSTANCE.fromRegisterRequestToAuth(dto);
+        auth.setActivationCode(CodeGenerator.generateCode());
+        try {
+            save(auth);
+            //rabbitmq ile haberlesme saglayacagiz.
+            registerProducer.sendNewUser(AuthMapper.INSTANCE.fromAuthToRegisterModel(auth));
+            cacheManager.getCache("findByRole").evict(auth.getRole().toString().toUpperCase());
+        } catch (Exception e){
+            throw new AuthManagerException(ErrorType.USER_NOT_CREATED);
+        }
         return AuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
     }
 

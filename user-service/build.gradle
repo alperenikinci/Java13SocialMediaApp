@@ -9,5 +9,6 @@ dependencies {
 //    implementation       libs.postgresql
     implementation       libs.springBootDataMongo
     implementation       libs.springCloudConfigClient
+    implementation       libs.springBootRabbitMQ
 }
 
