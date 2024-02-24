@@ -10,6 +10,8 @@ import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.UserManager;
 import com.bilgeadam.mapper.AuthMapper;
+import com.bilgeadam.rabbitmq.model.RegisterMailModel;
+import com.bilgeadam.rabbitmq.producer.RegisterMailProducer;
 import com.bilgeadam.rabbitmq.producer.RegisterProducer;
 import com.bilgeadam.repository.AuthRepository;
 import com.bilgeadam.utility.CodeGenerator;
@@ -36,15 +38,17 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final JwtTokenManager jwtTokenManager;
     private final CacheManager cacheManager;
     private final RegisterProducer registerProducer;
+    private final RegisterMailProducer registerMailProducer;
 
 
-    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager, CacheManager cacheManager, RegisterProducer registerProducer) {
+    public AuthService(AuthRepository authRepository, UserManager userManager, JwtTokenManager jwtTokenManager, CacheManager cacheManager, RegisterProducer registerProducer, RegisterMailProducer registerMailProducer) {
         super(authRepository);
         this.authRepository = authRepository;
         this.userManager = userManager;
         this.jwtTokenManager = jwtTokenManager;
         this.cacheManager = cacheManager;
         this.registerProducer = registerProducer;
+        this.registerMailProducer = registerMailProducer;
     }
 
     @Transactional
@@ -69,6 +73,11 @@ public class AuthService extends ServiceManager<Auth, Long> {
             save(auth);
             //rabbitmq ile haberlesme saglayacagiz.
             registerProducer.sendNewUser(AuthMapper.INSTANCE.fromAuthToRegisterModel(auth));
+            registerMailProducer.sendActivationCode(RegisterMailModel.builder()
+                    .email(auth.getEmail())
+                    .activationCode(auth.getActivationCode())
+                    .username(auth.getUsername())
+                    .build());
             cacheManager.getCache("findByRole").evict(auth.getRole().toString().toUpperCase());
         } catch (Exception e){
             throw new AuthManagerException(ErrorType.USER_NOT_CREATED);

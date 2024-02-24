@@ -6,6 +6,7 @@ import com.bilgeadam.dto.request.RegisterRequestDto;
 import com.bilgeadam.dto.request.UpdateEmailRequestDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.service.AuthService;
+//import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.enums.ERole;
 import jakarta.validation.Valid;

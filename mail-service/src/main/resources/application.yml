@@ -1,0 +1,23 @@
+server:
+  port: 7075
+
+spring:
+  mail:
+    username: ai.boostjava11@gmail.com #java13mailusername ismiyle ortam degiskeni olarak eklenecek
+    password: rcxvngxvqpxdkzil #java13mailpassword ismiyle ortam degiskeni olarak eklenecek.
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: java13
+    password: 123
+
+rabbitmq:
+  queue-mail-sender: mail-sender-queue

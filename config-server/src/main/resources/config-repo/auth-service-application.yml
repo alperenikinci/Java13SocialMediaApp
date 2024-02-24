@@ -29,3 +29,5 @@ rabbitmq:
   exchange-auth: auth-exchange
   key-register: register-key
   queue-register: register-queue
+  key-mail-sender: mail-sender-key
+  queue-mail-sender: mail-sender-queue
