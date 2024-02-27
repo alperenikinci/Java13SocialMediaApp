@@ -9,13 +9,13 @@ import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.AuthManager;
 import com.bilgeadam.mapper.UserProfileMapper;
 import com.bilgeadam.rabbitmq.model.RegisterModel;
+import com.bilgeadam.rabbitmq.producer.RegisterElasticProducer;
 import com.bilgeadam.repository.UserProfileRepository;
 import com.bilgeadam.utility.JwtTokenManager;
 import com.bilgeadam.utility.ServiceManager;
 import com.bilgeadam.utility.enums.EStatus;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,17 +29,20 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
     private final JwtTokenManager jwtTokenManager;
     private final AuthManager authManager;
     private final CacheManager cacheManager;
+    private final RegisterElasticProducer registerElasticProducer;
 
-    public UserProfileService(UserProfileRepository userProfileRepository, JwtTokenManager jwtTokenManager, AuthManager authManager, CacheManager cacheManager) {
+    public UserProfileService(UserProfileRepository userProfileRepository, JwtTokenManager jwtTokenManager, AuthManager authManager, CacheManager cacheManager, RegisterElasticProducer registerElasticProducer) {
         super(userProfileRepository);
         this.userProfileRepository = userProfileRepository;
         this.jwtTokenManager = jwtTokenManager;
         this.authManager = authManager;
         this.cacheManager = cacheManager;
+        this.registerElasticProducer = registerElasticProducer;
     }
 
     public Boolean createUser(CreateUserRequestDto dto) {
         try {
+            userProfileRepository.saveAll(List.of());
             save(UserProfileMapper.INSTANCE.fromCreateRequestToUserProfile(dto));
             return true;
         } catch (Exception e) {
@@ -49,7 +52,8 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
 
     public void createUserWithRabbitMq(RegisterModel model) {
         try {
-            save(UserProfileMapper.INSTANCE.fromRegisterModelToUserProfile(model));
+            UserProfile userProfile = save(UserProfileMapper.INSTANCE.fromRegisterModelToUserProfile(model));
+            registerElasticProducer.sendNewUser(UserProfileMapper.INSTANCE.fromUserProfileToRegisterElasticModel(userProfile));
         } catch (Exception e){
             throw new UserManagerException(ErrorType.USER_NOT_CREATED);
         }

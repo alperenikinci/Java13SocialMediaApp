@@ -1,0 +1,16 @@
+server:
+  port: 7079
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    username: admin
+    password: root
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: java13
+    password: 123
+
+rabbitmq:
+  queue-elastic-register: elastic-register-queue

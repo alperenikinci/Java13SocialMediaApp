@@ -21,6 +21,7 @@ import com.bilgeadam.utility.ServiceManager;
 import com.bilgeadam.utility.enums.ERole;
 import com.bilgeadam.utility.enums.EStatus;
 import org.springframework.cache.CacheManager;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

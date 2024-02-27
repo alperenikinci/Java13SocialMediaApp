@@ -26,7 +26,8 @@ ext{
             springCloudConfigServer:        "org.springframework.cloud:spring-cloud-config-server:${versions.springCloud}",
             springBootStarterDataRedis:     "org.springframework.boot:spring-boot-starter-data-redis:${versions.springBoot}",
             springBootRabbitMQ:             "org.springframework.boot:spring-boot-starter-amqp:$versions.springBoot",
-            springBootMailSender:           "org.springframework.boot:spring-boot-starter-mail:$versions.springBoot"
+            springBootMailSender:           "org.springframework.boot:spring-boot-starter-mail:$versions.springBoot",
+            springBootElasticSearch:        "org.springframework.boot:spring-boot-starter-data-elasticsearch:$versions.springBoot"
 
     ]
 }

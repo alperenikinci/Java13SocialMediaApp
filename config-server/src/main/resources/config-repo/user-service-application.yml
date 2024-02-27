@@ -22,3 +22,6 @@ jwt:
 
 rabbitmq:
   queue-register: register-queue
+  exchange-user: user-exchange
+  key-elastic-register: elastic-register-key
+  queue-elastic-register: elastic-register-queue
