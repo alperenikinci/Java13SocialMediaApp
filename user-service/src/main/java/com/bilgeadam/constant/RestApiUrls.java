@@ -4,8 +4,8 @@ public class RestApiUrls {
 
     public static final String VERSION = "api/v1";
     public static final String USER_PROFILE = VERSION+ "/user-profile";
+    public static final String FOLLOW= VERSION+"/follow";
 
-    //USER-PROFILE CONTROLLER
     public static final String CREATE = "/create";
     public static final String UPDATE = "/update";
     public static final String DELETE_BY_TOKEN = "/delete-by-token";
