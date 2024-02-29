@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 import com.bilgeadam.dto.request.CreateUserRequestDto;
 import com.bilgeadam.dto.request.UpdateEmailRequestDto;
 import com.bilgeadam.dto.request.UserProfileUpdateRequestDto;
+import com.bilgeadam.dto.response.UserProfileResponseDto;
 import com.bilgeadam.entity.UserProfile;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
@@ -146,5 +147,14 @@ public class UserProfileService extends ServiceManager<UserProfile,String> {
 
     public Optional<UserProfile> findByAuthId(Long authId) {
         return userProfileRepository.findByAuthId(authId);
+    }
+
+    public UserProfileResponseDto findUserByToken(String token) {
+        Optional<Long> authId = jwtTokenManager.getIdFromToken(token);
+        if (authId.isPresent()){
+            UserProfile userProfile = userProfileRepository.findByAuthId(authId.get()).get();
+            return UserProfileMapper.INSTANCE.fromUserProfileToUserProfileResponse(userProfile);
+        }
+        throw new UserManagerException(ErrorType.USER_NOT_FOUND);
     }
 }

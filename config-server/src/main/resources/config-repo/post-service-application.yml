@@ -1,0 +1,23 @@
+server:
+  port: 7072
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27020
+      username: java13user
+      password: root
+      database: postdb
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: java13
+#    password: 123
+
+
+#rabbitmq:
+#  queue-register: register-queue
+#  exchange-user: user-exchange
+#  key-elastic-register: elastic-register-key
+#  queue-elastic-register: elastic-register-queue

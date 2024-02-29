@@ -2,7 +2,11 @@ package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.CreateUserRequestDto;
 import com.bilgeadam.dto.request.UserProfileUpdateRequestDto;
+import com.bilgeadam.dto.response.UserProfileResponseDto;
 import com.bilgeadam.entity.UserProfile;
+import com.bilgeadam.exception.ErrorType;
+import com.bilgeadam.exception.UserManagerException;
+import com.bilgeadam.mapper.UserProfileMapper;
 import com.bilgeadam.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.bilgeadam.constant.RestApiUrls.*;
 import static com.bilgeadam.constant.RestApiUrls.ACTIVATE_STATUS;
@@ -54,6 +59,11 @@ public class UserProfileController {
     @GetMapping(FIND_BY_ROLE)
     public ResponseEntity<List<UserProfile>> findByRole(@RequestParam String role){
         return ResponseEntity.ok(userProfileService.findByRole(role));
+    }
+
+    @GetMapping(FIND_BY_TOKEN)
+    public ResponseEntity<UserProfileResponseDto> findUserByToken(@RequestParam String token) {
+      return ResponseEntity.ok(userProfileService.findUserByToken(token));
     }
 
 }
