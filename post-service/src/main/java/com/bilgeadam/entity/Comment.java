@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,7 +23,9 @@ public class Comment extends BaseEntity {
     private String postId;
     private String username;
     private String userAvatar;
-    private String comment;
-//    private List<String> subCommentId;
-//    private List<String> commentLikes;
+    private String content;
+//    private List<String> subCommentId; //yorumların yorumu için kullanabiliriz.
+
+    @Builder.Default
+    private List<String> commentLikes= new ArrayList<>();
 }

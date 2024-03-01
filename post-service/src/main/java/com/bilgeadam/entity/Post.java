@@ -1,6 +1,5 @@
 package com.bilgeadam.entity;
 
-import com.bilgeadam.utility.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +26,9 @@ public class Post extends BaseEntity {
     private String title;
     private String content;
     private List<String> mediaUrls;
-    private List<String> likes;
-    private List<String> comments;
+
+    @Builder.Default
+    private List<String> likes = new ArrayList<>();
+    @Builder.Default
+    private List<String> comments = new ArrayList<>();
 }
